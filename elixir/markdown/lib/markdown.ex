@@ -25,20 +25,11 @@ defmodule Markdown do
 
   defp interpret_line_type(_), do: :none
 
-  defp valid_element?("#" <> _ = line) do
-    chars_before_space =
-      line
-      |> String.split(" ")
-      |> at(0)
-      |> String.split("", trim: true)
-
-    # This reduce works like an every() function
-    all_hash_before_space? =
-      chars_before_space
-      |> reduce(true, &(&1 == "#" && &2))
-
-    valid_length = length(chars_before_space) < 6
-
-    valid_length && all_hash_before_space?
-  end
+  defp valid_element?("# " <> _), do: true
+  defp valid_element?("## " <> _), do: true
+  defp valid_element?("### " <> _), do: true
+  defp valid_element?("#### " <> _), do: true
+  defp valid_element?("##### " <> _), do: true
+  defp valid_element?("###### " <> _), do: true
+  defp valid_element?(_), do: false
 end
