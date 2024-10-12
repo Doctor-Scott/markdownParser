@@ -2,34 +2,20 @@ defmodule Markdown do
   import Enum
 
   @spec convert_to_html(String.t()) :: String.t()
-  def convert_to_html(markdown_string) do
+  def convert_to_html(markdown_string), do: split_convert_join(markdown_string)
+
+  defp split_convert_join(markdown_string) do
     markdown_string
     |> String.split("\n")
     |> map(&(&1 |> convert_line))
     |> join("\n")
   end
 
-  defp convert_line(line, :heading) do
-    heading_size = line |> String.split(" ") |> at(0) |> String.length()
-    string = line |> String.slice((heading_size + 1)..-1)
-
-    "<h#{heading_size}>#{string}</h#{heading_size}>"
-  end
-
-  defp convert_line(line, :none), do: line
-
-  defp convert_line(line), do: convert_line(line, line |> interpret_line_type)
-
-  # Match heading from first char of line
-  defp interpret_line_type("#" <> _ = line), do: (valid_element?(line) && :heading) || :none
-
-  defp interpret_line_type(_), do: :none
-
-  defp valid_element?("# " <> _), do: true
-  defp valid_element?("## " <> _), do: true
-  defp valid_element?("### " <> _), do: true
-  defp valid_element?("#### " <> _), do: true
-  defp valid_element?("##### " <> _), do: true
-  defp valid_element?("###### " <> _), do: true
-  defp valid_element?(_), do: false
+  defp convert_line("# " <> string), do: "<h1>#{string}</h1>"
+  defp convert_line("## " <> string), do: "<h2>#{string}</h2>"
+  defp convert_line("### " <> string), do: "<h3>#{string}</h3>"
+  defp convert_line("#### " <> string), do: "<h4>#{string}</h4>"
+  defp convert_line("##### " <> string), do: "<h5>#{string}</h5>"
+  defp convert_line("###### " <> string), do: "<h6>#{string}</h6>"
+  defp convert_line(line), do: line
 end
